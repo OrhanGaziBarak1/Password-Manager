@@ -2,7 +2,9 @@ package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +25,8 @@ public class MainActivity  extends AppCompatActivity{
             "7" , "8" , "9", "!" , "#" , "'" , "+" , "%" , "(" , ")" , "&" ,
             "=" , "?" , "*" , "-" , "$" , "{" , "}" };
     private String password = "";
-    private final String message = "Password Copied Successfully";
+    private final String messageSuccess = "Password Copied Successfully.";
+    private final String messageError = "Password Can't Copied.";
 
     private String generate () {
         Random random = new Random();
@@ -60,8 +63,19 @@ public class MainActivity  extends AppCompatActivity{
         copyPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                copy.setText(password);
-                Toast.makeText(getApplicationContext(), message , Toast.LENGTH_SHORT).show();
+                ClipData copyData = ClipData.newPlainText("password" , password);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    copy.clearPrimaryClip();
+                } else {
+                    copy.setPrimaryClip(copyData);
+                }
+
+                if (copy.hasPrimaryClip()) {
+                    Toast.makeText(getApplicationContext(), messageSuccess, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), messageError, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
