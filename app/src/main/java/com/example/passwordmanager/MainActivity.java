@@ -46,19 +46,59 @@ public class MainActivity  extends AppCompatActivity{
 
     private String password = "";
     private String passwordCopy = "";
-    private int lengthPassword;
     private final String messageSuccess = "Password Copied Successfully.";
-    private final String messageError = "Password Can't Copied.";
+    private final String messageErrorCopy = "Password Can't Copied.";
 
-    private String generate () {
+    private boolean upper = true;
+    private boolean lower = true;
+    private boolean special = true;
+    private boolean number = true;
+
+    private void generate () {
         Random random = new Random();
-        int character;
 
-        while (password.length() < 16) {
-            character = random.nextInt(76);
-            password += characters[character];
+        int character;
+        int lengthPassword;
+
+        String lengthPasswordStr = "";
+        final String messageErrorInput = "You must be true typed length for generate the password.";
+
+        Editable editablePassword;
+
+        editablePassword = binding.lengthInputBox.getText();
+
+        if (editablePassword != null) {
+            lengthPasswordStr = editablePassword.toString();
+            lengthPassword = Integer.parseInt(lengthPasswordStr);
+
+            if (lengthPassword <= 16 && lengthPassword >= 8) {
+                while (password.length() < lengthPassword) {
+
+                    if(lower) {
+                        character = random.nextInt((lowerLetters.length - 1));
+                        password += lowerLetters[character];
+                    }
+
+                    if(upper) {
+                        character = random.nextInt((upperLetters.length - 1));
+                        password += upperLetters[character];
+                    }
+
+                    if (special) {
+                        character = random.nextInt((specialCharacters.length - 1));
+                        password += specialCharacters[character];
+                    }
+                    if (number) {
+                        character = random.nextInt((numbers.length - 1));
+                        password += numbers[character];
+                    }
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), messageErrorInput, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), messageErrorInput, Toast.LENGTH_SHORT).show();
         }
-        return password;
     }
 
     private ActivityMainBinding binding;
@@ -76,13 +116,44 @@ public class MainActivity  extends AppCompatActivity{
 
         ClipboardManager copy = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
+        binding.upperCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                upper = !upper;
+            }
+        });
+
+        binding.lowerCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lower = !lower;
+            }
+        });
+
+        binding.specialCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                special = !special;
+            }
+        });
+
+        binding.numberCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               number = !number;
+            }
+        });
 
         binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.text.setText(generate());
-                passwordCopy = password;
-                password = "";
+                generate();
+
+                if (!password.equals(null)) {
+                    binding.text.setText(password);
+                    passwordCopy = password;
+                    password = "";
+                }
             }
         });
 
@@ -99,7 +170,7 @@ public class MainActivity  extends AppCompatActivity{
                 if (copy.hasPrimaryClip()) {
                     Toast.makeText(getApplicationContext(), messageSuccess, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), messageError, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), messageErrorCopy, Toast.LENGTH_SHORT).show();
                 }
             }
         });

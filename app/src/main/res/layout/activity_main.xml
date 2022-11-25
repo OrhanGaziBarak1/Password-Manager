@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:gravity="center_horizontal"
-        android:textSize="23sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scroll" />
@@ -100,13 +100,14 @@
                 android:id="@+id/length"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/lengthHint">
+                android:hint="@string/lengthHint"
+                app:boxBackgroundColor="@null">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/lengthInputBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberSigned" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </ScrollView>
