@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Password Manager</string>
     <string name="button">Generate Password</string>
+    <string name="lower">Lower Letters</string>
+    <string name="upper">Upper Letters</string>
+    <string name="special">Special Characters</string>
+    <string name="numbers">Numbers</string>
+    <string name="lengthHint">Password Length:(Must be 8 to 16)</string>
+    <string name="descriptionImageButton">Copy to password</string>
+    <string name="descriptionText">You can choose your password\'s style and then generate with generate button.</string>
 </resources>

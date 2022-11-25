@@ -1,16 +1,17 @@
 package com.example.passwordmanager;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.passwordmanager.databinding.ActivityMainBinding;
 
 import java.util.Random;
 
@@ -24,7 +25,28 @@ public class MainActivity  extends AppCompatActivity{
             "u" , "v" , "w" , "x" , "y" , "z", "0" , "1" , "2" , "3" , "4" , "5" , "6" ,
             "7" , "8" , "9", "!" , "#" , "'" , "+" , "%" , "(" , ")" , "&" ,
             "=" , "?" , "*" , "-" , "$" , "{" , "}" };
+    private final String [] lowerLetters = {
+            "a" , "b" , "c" , "d" , "e" , "f" , "g" , "h",
+            "i" , "j" , "k" , "l" , "m" , "n" , "o" , "p" , "q" , "r" , "s" , "t" ,
+            "u" , "v" , "w" , "x" , "y" , "z"
+    };
+    private final String [] upperLetters = {
+            "A" , "B" , "C" , "D" , "E" , "F" , "G" , "H",
+            "I" , "J" , "K" , "L" , "M" , "N" , "O" , "P" , "Q" , "R" , "S" , "T" ,
+            "U" , "V" , "W" , "X" , "Y" , "Z"
+    };
+    private final String [] specialCharacters = {
+            "!" , "#" , "'" , "+" , "%" , "(" , ")" , "&" ,
+            "=" , "?" , "*" , "-" , "$" , "{" , "}"
+    };
+    private final String [] numbers = {
+            "0" , "1" , "2" , "3" , "4" , "5" , "6" ,
+            "7" , "8" , "9"
+    };
+
     private String password = "";
+    private String passwordCopy = "";
+    private int lengthPassword;
     private final String messageSuccess = "Password Copied Successfully.";
     private final String messageError = "Password Can't Copied.";
 
@@ -39,6 +61,8 @@ public class MainActivity  extends AppCompatActivity{
         return password;
     }
 
+    private ActivityMainBinding binding;
+
     //SharedPreferences
 
 
@@ -47,29 +71,30 @@ public class MainActivity  extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView passwordText = findViewById(R.id.text);
-        Button buttonGenerate = findViewById(R.id.button);
-        ImageButton copyPassword = findViewById(R.id.copy);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         ClipboardManager copy = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-        buttonGenerate.setOnClickListener(new View.OnClickListener() {
+
+        binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                passwordText.setText(generate());
+                binding.text.setText(generate());
+                passwordCopy = password;
                 password = "";
             }
         });
 
-        copyPassword.setOnClickListener(new View.OnClickListener() {
+        binding.copy.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
-            public void onClick(View v) {
-                ClipData copyData = ClipData.newPlainText("password" , password);
+            public void onClick(View view) {
+                CharSequence passwordChar = new StringBuffer(passwordCopy);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    copy.clearPrimaryClip();
-                } else {
+                ClipData copyData = ClipData.newPlainText("copiedPassword" , passwordChar);
+
                     copy.setPrimaryClip(copyData);
-                }
 
                 if (copy.hasPrimaryClip()) {
                     Toast.makeText(getApplicationContext(), messageSuccess, Toast.LENGTH_SHORT).show();
@@ -78,5 +103,6 @@ public class MainActivity  extends AppCompatActivity{
                 }
             }
         });
+
     }
 }
